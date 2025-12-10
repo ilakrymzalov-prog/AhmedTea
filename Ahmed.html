@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ahmed Tea — демо</title>
+
+<!-- Подключаем Lora -->
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+
+<style>
+  :root{
+    --green-dark:#1e6b3a;
+    --green-soft:#e6efe3;
+    --accent:#a07b3e;
+    --card-border: #cfc99d;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family: "Lora", Georgia, serif;
+    background:#f5f4f0;
+    color:#111;
+    margin:0;
+  }
+
+  /* ---------- HERO (начальный экран) ---------- */
+  .hero{
+    min-height:80vh;
+    background: url("Fon.png") center/cover ; /* <- ВСТАВЬТЕ ФОН */
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:48px;
+  }
+
+  .hero-inner{
+    width:100%;
+    max-width:1200px;
+    display:flex;
+    gap:3px;
+    align-items:center;
+    justify-content:space-between;
+  }
+
+  /* левая колонка с текстом и кнопками */
+  .hero-left{
+    flex:1 1 0;
+    color:#fff;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.45);
+  }
+  .hero-left h1{
+    font-size:48px;
+    line-height:1.05;
+    margin:0 0 12px 0;
+	font-style: italic;  
+  }
+  .hero-left p{
+    margin:0 0 22px 0;
+    font-size:18px;
+    max-width:520px;
+	  font-style: italic;
+  }
+  .hero-actions{
+    display:flex;
+    gap:14px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .btn{
+    background:var(--green-dark);
+    color:#fff;
+    padding:25px 60px;
+    border-radius:12px;
+    text-decoration:none;
+    font-size:28px;
+    border:none;
+    cursor:pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+	font-style: italic;
+  }
+  .btn.secondary{
+    background:rgba(255,255,255,0.95);
+    color:var(--green-dark);
+    border:2px solid rgba(255,255,255,0.25);
+	
+  }
+
+  /* правая колонка: место под большой логотип */
+  .hero-right{
+    width:390px;
+    height:400px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .hero-right .logo-placeholder{
+    width:84%;
+    height:84%;
+    background: url("logo.png") center/contain; /* <- ВСТАВЬТЕ логотип */
+  }
+
+  /* ---------- АССОРТИМЕНТ ---------- */
+  .section-title {
+    padding: 40px 5% 60px 5%;
+    background: url("Assortiment.png") center/cover;
+    background-repeat: no-repeat;
+  }
+
+  .section-title h2 {
+    font-size: 30px;
+    margin: 0 0 20px 0;
+    background: #fff;
+    border-radius: 12px;
+    width: 240px;
+    padding: 18px;
+    border: 2px solid var(--card-border);
+    text-align: center;
+  }
+
+  .assortment-text {
+    margin: 0 0 20px 0;
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px;
+    border: 2px solid var(--card-border);
+    font-size: 18px;
+  }
+
+  .tea-grid {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0 auto 80px;
+    flex-wrap: wrap;
+  }
+
+  .tea-card {
+    width: calc(25% - 30px);
+    text-align: center;
+    padding: 15px;
+    border-radius: 12px;
+    background: #fff;
+    border: 2px solid var(--card-border);
+    margin-bottom: 20px;
+  }
+
+  .tea-img {
+    width: 173px;
+    height: 135px;
+    background: #ddd;
+    margin: 0 auto 10px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 8px;
+  }
+
+  .tea-name {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .btn-more {
+    border: 2px solid #0d572c;
+    padding: 6px 20px;
+    background: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-more:hover {
+    background: #0d572c;
+    color: white;
+  }
+
+  /* --------------------------- Pop-up ------------------------ */
+  .popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+  }
+
+  .popup {
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 1300px;
+    padding: 40px;
+    position: relative;
+    border: 3px solid #b7c18a;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .popup-close {
+    position: absolute;
+    right: 25px;
+    top: 15px;
+    font-size: 40px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+  }
+
+  .popup-close:hover {
+    color: #f00;
+  }
+
+  .popup-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 30px;
+  }
+
+  .popup-item {
+    border: 2px solid #b7c18a;
+    border-radius: 20px;
+    padding: 20px 25px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    background: #fff;
+  }
+
+  .popup-img {
+    width: 173px;
+    height: 135px;
+    background: #ddd;
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+  }
+
+  .popup-text {
+    font-size: 20px;
+    line-height: 1.4;
+  }
+
+  .popup-sort-name {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #1e6b3a;
+  }
+
+  /* ---------- О компании ---------- */
+  .about{
+    padding:40px 5%;
+    display:flex;
+    gap:24px;
+    align-items:flex-start;
+    background: #fff;
+  }
+  .about-left{
+    flex:1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .about-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; 
+    margin-bottom: 0;
+    gap: 20px;
+  }
+  .about-title {
+    margin: 0;
+    font-size: 28px;
+    color: var(--green-dark);
+  }
+  .about-logo{
+    width:72px;
+    height:72px;
+    border-radius:50%;
+    background: url("logo.png") center/contain no-repeat;
+    
+    
+    flex-shrink:0;
+  }
+  .about-box{
+    border:3px solid var(--green-dark);
+    padding:18px;
+    border-radius:18px;
+    background:#fff;
+    flex: 1;
+  }
+  .about-box p {
+    margin-top: 15px;
+    line-height: 1.6;
+  }
+  .about-right{
+    width:50%;
+    border:3px solid var(--green-dark);
+    border-radius:18px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f4f0;
+  }
+  .about-right iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    display: block;
+    border: none;
+  }
+
+  /* ---------- Контакты ---------- */
+  .contacts{
+    background:#EFEFEF;
+    display:flex;
+    align-items:flex-start;
+  }
+  .contacts .left-visual{
+    width:490px;
+    min-height:600px;
+    background: url("kontakt.png") no-repeat;
+    background-color:#fff;
+    flex-shrink:0;
+  }
+  .contacts .right-form{
+    flex:1;
+    background:#fff;
+    border-radius:12px;
+    margin-top: 30px;
+    padding:18px;
+    border:2px solid var(--card-border);
+    align-items: center;      
+  }
+  .contacts .right-form h3{
+    margin:0 0 10px 0;
+  }
+  .contacts label{
+    display:block;
+    margin-top:10px;
+    font-size:14px;
+  }
+  .contacts input, .contacts textarea{
+    width:100%;
+    padding:10px 12px;
+    margin-top:6px;
+    border:1px solid #cfcfcf;
+    border-radius:8px;
+    font-family:inherit;
+    font-size:15px;
+  }
+  .contacts .submit{
+    margin-top:12px;
+    padding:10px 16px;
+    background:var(--green-dark);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+  }
+
+  footer{
+    padding:18px 5%;
+    background:var(--green-dark);
+    color:#fff;
+    text-align:center;
+    border-top:4px solid rgba(0,0,0,0.06);
+  }
+
+  /* адаптив */
+  @media(max-width:980px){
+    .hero-inner{
+      flex-direction:column;
+      align-items:flex-start;
+    }
+    .hero-right{
+      width:220px;
+      height:220px;
+      margin-top:18px;
+    }
+    .tea-grid{
+      justify-content: center;
+    }
+    .tea-card{
+      width: calc(50% - 20px);
+      margin: 0 10px 20px;
+    }
+    .popup-grid{
+      grid-template-columns:1fr;
+    }
+    .popup-item{
+      flex-direction: column;
+      text-align: center;
+    }
+    .popup-img{
+      width: 140px;
+      height: 140px;
+    }
+    .about{
+      flex-direction:column;
+    }
+    .about-right{
+      width:100%;
+      min-height: 300px;
+    }
+    .about-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    .about-logo {
+      align-self: flex-start;
+    }
+    .contacts{
+      flex-direction:column;
+    }
+    .contacts .left-visual{
+      width:100%;
+      height:180px;
+    }
+  }
+
+  @media(max-width:768px){
+    .tea-card{
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto 20px;
+    }
+    .popup{
+      padding: 20px;
+    }
+    .popup-grid{
+      gap: 20px;
+    }
+    .about-right {
+      min-height: 250px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" role="banner" aria-label="Главный экран">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <h1>Чай, рождённый <br> в гармонии природы</h1>
+      <p>С 1905 года мы создаём вкусные традиции, <br> которые делают каждый день особенным</p>
+
+      <div class="hero-actions">
+        <a class="btn" href="#assort">Ассортимент</a>
+        <a class="btn secondary" href="#about">О компании</a>
+      </div>
+    </div>
+
+    <div class="hero-right" aria-hidden="false">
+      <div class="logo-placeholder" title="Логотип Ahmed Tea"></div>
+    </div>
+  </div>
+</section>
+
+<!-- АССОРТИМЕНТ -->
+<div class="section-title" id="assort">
+  <h2>Ассортимент</h2>
+  <p class="assortment-text">Мы собрали для вас лучшие сорта со всего мира: от классических чёрных чаёв до редких улунов и ароматных травяных сборов. Найдите свой идеальный вкус.</p>
+  <div class="tea-grid">
+    <div class="tea-card">
+      <div class="tea-img" style="background-image: url('Чай1.png')"></div>
+      <div class="tea-name">Черный чай</div>
+      <button class="btn-more" onclick="openPopup('black')">Подробнее</button>
+    </div>
+    <div class="tea-card">
+      <div class="tea-img" style="background-image: url('Чай2.png')"></div>
+      <div class="tea-name">Зеленый чай</div>
+      <button class="btn-more" onclick="openPopup('green')">Подробнее</button>
+    </div>
+    <div class="tea-card">
+      <div class="tea-img" style="background-image:url('Чай3.png')"></div>
+      <div class="tea-name">Травяной сбор</div>
+      <button class="btn-more" onclick="openPopup('herbal')">Подробнее</button>
+    </div>
+    <div class="tea-card">
+      <div class="tea-img" style="background-image:url('Чай4.png')"></div>
+      <div class="tea-name">Белый чай</div>
+      <button class="btn-more" onclick="openPopup('white')">Подробнее</button>
+    </div>
+  </div>
+</div>
+
+<!-- POP-UP -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup" id="popupContent">
+    <div class="popup-close" onclick="closePopup()">×</div>
+    <h2 style="text-align:center" id="popupTitle"></h2>
+    <div class="popup-grid" id="popupGrid"></div>
+  </div>
+</div>
+
+<!-- О КОМПАНИИ -->
+<section class="about" id="about">
+  <div class="about-left">
+    <div class="about-header">
+      <h3 class="about-title">Наша история</h3>
+      <div class="about-logo"></div>
+    </div>
+    <div class="about-box">
+      <p>Чай — это больше, чем напиток. Это минуты отдыха, вдохновения и тепла. Мы собираем чай только на лучших плантациях мира. Каждый лист проходит строгий контроль качества. Нашими трудами производятся вкусы для любого настроения: бодрости утром, гармонии днём и уюта вечером</p>
+    </div>
+  </div>
+  <div class="about-right">
+    <!-- Замените YOUR_RUTUBE_VIDEO_ID на реальный ID видео с Rutube -->
+    <!-- Например, для видео https://rutube.ru/video/abc123def456/ используйте abc123def456 -->
+    <iframe 
+      src="https://rutube.ru/play/embed/YOUR_RUTUBE_VIDEO_ID"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+</section>
+
+<!-- Контакты -->
+<section class="contacts" id="contacts">
+  <div class="left-visual"></div>
+  <div class="right-form">
+    <h3>Контакты</h3>
+    <p>Связаться с нами можно любым удобным способом. Заполните форму и мы свяжемся с вами.</p>
+
+    <form id="contactForm">
+      <label for="name">Ваше имя</label>
+      <input id="name" name="name" type="text" placeholder="Введите ваше имя" required>
+
+      <label for="phone">Телефон</label>
+      <input id="phone" name="phone" type="tel" placeholder="+7 000 000-00-00" pattern="[\+0-9\-\s]+" required>
+
+      <label for="email">Почта (если нужно)</label>
+      <input id="email" name="email" type="email" placeholder="email@example.com">
+
+      <label for="message">Комментарий</label>
+      <textarea id="message" name="message" rows="5" placeholder="Ваш комментарий"></textarea>
+
+      <button class="submit" type="submit">Отправить</button>
+    </form>
+
+    <div id="formResult" style="margin-top:12px;color:green;display:none">Спасибо! Мы свяжемся с вами.</div>
+  </div>
+</section>
+
+<footer>
+  Телефон: +7 (999) 123-45-67 • Почта: info@ahmedtea.ru
+  <div style="margin-top:6px;font-size:12px">© 1905 – 2025 Ahmed Tea. Все права защищены.</div>
+</footer>
+
+<script>
+// Функция открытия pop-up
+function openPopup(type) {
+    const title = {
+        black: "Чёрный чай",
+        green: "Зелёный чай",
+        herbal: "Травяные сборы",
+        white: "Белый чай"
+    };
+
+    const data = {
+        black: [
+            {
+                name: "Ассам",
+                img: "Чай1.png",
+                text: "Классический крепкий чай с солодовым вкусом и янтарным настоем. Идеален для утреннего чаепития."
+            },
+            {
+                name: "Дарджилинг",
+                img: "Чай1.png",
+                text: "«Чайное шампанское» с цветочным ароматом и лёгкой терпкостью. Собирается в Гималаях."
+            },
+            {
+                name: "Эрл Грей",
+                img: "Чай1.png",
+                text: "Чёрный чай с натуральным маслом бергамота. Яркий цитрусовый аромат и освежающий вкус."
+            },
+            {
+                name: "Цейлонский",
+                img: "Чай1.png",
+                text: "Яркий вкус с нотами шоколада или мёда. Популярный повседневный чай из Шри-Ланки."
+            }
+        ],
+
+        green: [
+            { 
+                name: "Сенча", 
+                img: "Чай2.png", 
+                text: "Самый популярный японский зелёный чай с нежным травянистым вкусом и светло-зелёным настоем." 
+            },
+            { 
+                name: "Гёкуро", 
+                img: "Чай2.png", 
+                text: "Элитный японский чай, выращенный в тени. Обладает сладким насыщенным вкусом и богатым ароматом." 
+            },
+            { 
+                name: "Лунцзин", 
+                img: "Чай2.png", 
+                text: "Китайский чай «Колодец дракона» с плоскими листьями, ореховым привкусом и свежим ароматом." 
+            },
+            { 
+                name: "Би Ло Чунь", 
+                img: "Чай2.png", 
+                text: "Китайский чай «Изумрудные спирали весны» с цветочно-фруктовым ароматом и нежным вкусом." 
+            }
+        ],
+
+        herbal: [
+            { 
+                name: "Ромашковый", 
+                img: "Чай3.png", 
+                text: "Успокаивающий чай из цветков ромашки. Помогает расслабиться и улучшает сон." 
+            },
+            { 
+                name: "Мятный", 
+                img: "Чай3.png", 
+                text: "Освежающий чай из листьев перечной мяты. Способствует пищеварению и освежает дыхание." 
+            },
+            { 
+                name: "Имбирный", 
+                img: "Чай3.png", 
+                text: "Согревающий чай с корнем имбиря, лимоном и мёдом. Укрепляет иммунитет." 
+            },
+            { 
+
+                name: "Шиповник", 
+                img: "Чай3.png", 
+                text: "Витаминный чай из плодов шиповника. Богат витамином C, укрепляет организм." 
+            }
+        ],
+
+        white: [
+            { 
+                name: "Бай Хао Инь Чжэнь", 
+                img: "Чай4.png", 
+                text: "«Серебряные иглы» — элитный белый чай из нераскрывшихся почек. Нежный медовый вкус." 
+            },
+            { 
+                name: "Бай Му Дань", 
+                img: "Чай4.png", 
+                text: "«Белый пион» — включает почки и листья. Цветочно-фруктовый вкус с лёгкой сладостью." 
+            },
+            { 
+                name: "Шоу Мэй", 
+                img: "Чай4.png", 
+                text: "«Брови долголетия» — более насыщенный вкус с древесными нотами. Выдерживает многократное заваривание." 
+            },
+            { 
+                name: "Гонг Мэй", 
+                img: "Чай4.png", 
+                text: "«Подарочные брови» — доступный белый чай с тёплым, слегка сладковатым вкусом." 
+            }
+        ]
+    };
+
+    // Устанавливаем заголовок
+    document.getElementById("popupTitle").textContent = title[type] || "Информация о чае";
+
+    // Заполняем сетку
+    const grid = document.getElementById("popupGrid");
+    grid.innerHTML = "";
+
+    if (data[type]) {
+        data[type].forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'popup-item';
+            itemDiv.innerHTML = `
+                <div class="popup-img" style="background-image:url('${item.img}')"></div>
+                <div class="popup-text">
+                    <div class="popup-sort-name">${item.name}</div>
+                    <p>${item.text}</p>
+                </div>
+            `;
+            grid.appendChild(itemDiv);
+        });
+    } else {
+        grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px;">Информация пока не добавлена.</p>';
+    }
+
+    // Показываем pop-up
+    document.getElementById("popupOverlay").style.display = "flex";
+    document.body.style.overflow = "hidden";
+}
+
+// Функция закрытия pop-up
+function closePopup() {
+    document.getElementById("popupOverlay").style.display = "none";
+    document.body.style.overflow = "auto";
+}
+
+// Закрытие по клику на фон
+document.getElementById('popupOverlay').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closePopup();
+    }
+});
+
+// Закрытие по клавише ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById("popupOverlay").style.display === "flex") {
+        closePopup();
+    }
+});
+
+// Обработка формы контактов
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Здесь можно добавить отправку данных на сервер
+    // Например: fetch('/send-form', { method: 'POST', body: new FormData(this) })
+    
+    // Показываем сообщение об успехе
+    var result = document.getElementById('formResult');
+    result.style.display = 'block';
+    result.textContent = 'Спасибо! Мы свяжемся с вами в ближайшее время.';
+    
+    // Очищаем форму
+    this.reset();
+    
+    // Скрываем сообщение через 4 секунды
+    setTimeout(() => {
+        result.style.display = 'none';
+    }, 4000);
+    
+    return false;
+});
+
+// Плавная прокрутка к якорям
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            window.scrollTo({
+                top: targetElement.offsetTop - 20,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+</script>
+
+</body>
+</html>
